@@ -145,7 +145,7 @@ Address = 10.77.0.1/24
 PostUp   = iptables -A FORWARD -i wg0 -j ACCEPT; iptables -A FORWARD -o wg0 -j ACCEPT; iptables -t nat -A POSTROUTING -o $eth -j MASQUERADE
 PostDown = iptables -D FORWARD -i wg0 -j ACCEPT; iptables -D FORWARD -o wg0 -j ACCEPT; iptables -t nat -D POSTROUTING -o $eth -j MASQUERADE
 ListenPort = $port
-DNS = 8.8.8.8
+#DNS = 8.8.8.8
 MTU = 1420
 [Peer]
 PublicKey = $c2
@@ -170,6 +170,9 @@ EOF
     green "电脑端请下载/etc/wireguard/client.conf文件，手机端可直接使用软件扫码"
     green "${content}" | qrencode -o - -t UTF8
     red "注意：本次安装必须重启一次, wireguard才能正常使用"
+    
+    reboot
+    
     read -p "是否现在重启 ? [Y/n] :" yn
     [ -z "${yn}" ] && yn="y"
     if [[ $yn == [Yy] ]]; then
@@ -277,4 +280,8 @@ function start_menu(){
         esac
 }
 
-start_menu
+#start_menu
+check_selinux
+install_wg
+config_wg
+
